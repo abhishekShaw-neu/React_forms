@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import  {Formic , Field , Form , ErrorMessage } from 'formik'
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const Title = styled.h1`
   white-space: pre-line;
 `
 
-const Form = styled.form`
+const SignInForm = styled(Form)`
   display: flex;
   flex-direction: column;
   padding: 30px;
@@ -33,12 +33,12 @@ const Label = styled.label`
   font-size: 24px;
 `
 
-const EmailInput = styled.input`
+const EmailField = styled(Field)`
   height: 40px;
   font-size: 24px;
 `
 
-const PasswordInput = styled.input`
+const PasswordField = styled(Field)`
   height: 40px;
   font-size: 24px;
 `
@@ -54,7 +54,7 @@ const CheckboxLabel = styled(Label)`
   margin-left: 10px;
 `
 
-const RememberMeCheckbox = styled.input`
+const RememberMeCheckboxField = styled(Field)`
   margin-top: 10px;
 `
 
@@ -75,9 +75,8 @@ const ErrorLabel = styled.div`
   font-size: 26px;
   color: red;
 `
-
 class SignInComponent extends React.Component {
-  
+  /*
   constructor(props) {
     super(props);
 
@@ -127,8 +126,80 @@ class SignInComponent extends React.Component {
     } else {
       alert(JSON.stringify(this.state))
     }
+  }*/
+
+
+  constructor(props){
+    super(props)
+
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handelValidation = this.handelValidation.bind(this)
+  }
+  handleSubmit(values,actions) {
+    return new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve()
+        alert(JSON.stringify(values))
+      },5000)
+    });
   }
 
+  handelValidation(values) {
+    const errors = {};
+
+    if(!values.email) {
+      errors.email = "Email can't be empty"
+    }
+    if(!values.password) {
+      errors.password = "password can't be empty"
+    }else if(values.password.length < 8) {
+      errors.password = "password cant be less than * characters"
+    }
+    return errors
+  }
+render() {
+  return (
+    <Container>
+      <ContentContainer>
+        <Title>{"Sign In"}</Title>
+        <Formik initialValues ={{email:'',password:'',rememberMe:false}}
+                onSubmit= {this.handleSubmit}
+                validate={this.handelValidation}>
+
+                  {props => (
+                  <SignInForm>
+                    <Label>Email</Label>
+                    <EmailField name="email" type="email"/>
+                    <ErrorMessage name="email">
+                      {error=> <ErrorLabel>{error}</ErrorLabel>}
+                    </ErrorMessage>
+
+                    <Label>Password</Label>
+                    <PasswordField name="password" type="password"/>
+                    <ErrorMessage name="password">
+                      {error=> <ErrorLabel>{error}</ErrorLabel>}
+                    </ErrorMessage>
+
+                    <CheckboxContainer>
+                      <RememberMeCheckboxField type="checkbox" name="rememberMe"/>
+                      <CheckboxLabel>Remember Me</CheckboxLabel>
+                    </CheckboxContainer>
+                  
+                  <SubmitButton type="submit" disableed={props.isSubmitting}/>
+                  </SignInForm>
+                )}
+
+                </Formik>
+
+                
+        
+      </ContentContainer>
+    </Container>
+  )
+}
+}
+
+/*
   render() {
        return (
         <Container>
@@ -164,5 +235,6 @@ class SignInComponent extends React.Component {
       ); 
     }
   }
+  */
 
 export default SignInComponent;
